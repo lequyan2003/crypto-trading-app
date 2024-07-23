@@ -1,4 +1,4 @@
-package com.mcb;
+package com.mcb.request;
 
 import com.mcb.domain.VerificationType;
 
