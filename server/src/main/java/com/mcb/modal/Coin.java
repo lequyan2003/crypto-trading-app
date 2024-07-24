@@ -49,6 +49,9 @@ public class Coin {
     @JsonProperty("price_change_24h")
     private double priceChange24h;
 
+    @JsonProperty("price_change_percentage_24h")
+    private double priceChangePercentage24h;
+
     @JsonProperty("market_cap_change_24h")
     private long marketCapChange24h;
 
