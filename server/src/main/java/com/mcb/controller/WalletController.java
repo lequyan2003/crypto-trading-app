@@ -3,6 +3,7 @@ package com.mcb.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,7 @@ import com.mcb.modal.Order;
 import com.mcb.modal.User;
 import com.mcb.modal.Wallet;
 import com.mcb.modal.WalletTransaction;
+import com.mcb.service.OrderService;
 import com.mcb.service.UserService;
 import com.mcb.service.WalletService;
 
@@ -28,7 +30,8 @@ public class WalletController {
     @Autowired
     private UserService userService;
 
-    private OrderService
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping("/api/wallet")
     public ResponseEntity<Wallet> getUserWallet(
