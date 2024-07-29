@@ -5,6 +5,7 @@ import com.mcb.modal.PaymentOrder;
 import com.mcb.modal.User;
 import com.mcb.response.PaymentResponse;
 import com.razorpay.RazorpayException;
+import com.stripe.exception.StripeException;
 
 public interface PaymentService {
     PaymentOrder createOrder(User user, Long amount, PaymentMethod paymentMethod);
@@ -15,5 +16,5 @@ public interface PaymentService {
 
     PaymentResponse createRazorpayPaymentLink(User user, Long amount) throws RazorpayException;
 
-    PaymentResponse createStripePaymentLink(User user, Long amount, Long orderId);
+    PaymentResponse createStripePaymentLink(User user, Long amount, Long orderId) throws StripeException;
 }
