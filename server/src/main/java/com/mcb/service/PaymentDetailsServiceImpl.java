@@ -1,11 +1,13 @@
 package com.mcb.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.mcb.modal.PaymentDetails;
 import com.mcb.modal.User;
 import com.mcb.repository.PaymentDetailsRepository;
 
+@Service
 public class PaymentDetailsServiceImpl implements PaymentDetailsService {
     @Autowired
     private PaymentDetailsRepository paymentDetailsRepository;

@@ -3,6 +3,7 @@ package com.mcb.service;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import com.mcb.domain.PaymentMethod;
 import com.mcb.domain.PaymentOrderStatus;
@@ -19,6 +20,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 
+@Service
 public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private PaymentOrderRepository paymentOrderRepository;
@@ -38,6 +40,7 @@ public class PaymentServiceImpl implements PaymentService {
         paymentOrder.setUser(user);
         paymentOrder.setAmount(amount);
         paymentOrder.setPaymentMethod(paymentMethod);
+        paymentOrder.setStatus(PaymentOrderStatus.PENDING);
 
         return paymentOrderRepository.save(paymentOrder);
     }
@@ -51,6 +54,10 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Boolean proceedPaymentOrder(PaymentOrder paymentOrder, String paymentId) throws RazorpayException {
+        if (paymentOrder.getStatus() == null) {
+            paymentOrder.setStatus(PaymentOrderStatus.PENDING);
+        }
+        
         if (paymentOrder.getStatus().equals(PaymentOrderStatus.PENDING)) {
             if (paymentOrder.getPaymentMethod().equals(PaymentMethod.RAZORPAY)) {
                 RazorpayClient razorpayClient = new RazorpayClient(
@@ -78,7 +85,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentResponse createRazorpayPaymentLink(User user, Long amount) throws RazorpayException {
+    public PaymentResponse createRazorpayPaymentLink(User user, Long amount, Long orderId) throws RazorpayException {
         Long Amount = amount * 100;
 
         try {
@@ -88,7 +95,7 @@ public class PaymentServiceImpl implements PaymentService {
             // Create a JSON object with the payment link request parameters
             JSONObject paymentLinkRequest = new JSONObject();
             paymentLinkRequest.put("amount", amount);
-            paymentLinkRequest.put("currency", "INR");
+            paymentLinkRequest.put("currency", "USD");
 
             // Create a JSON object with the customer details
             JSONObject customer = new JSONObject();
@@ -106,7 +113,7 @@ public class PaymentServiceImpl implements PaymentService {
             paymentLinkRequest.put("reminder_enable", true);
 
             // Set the callback URL and method
-            paymentLinkRequest.put("callback_url", "http://localhost:5173/wallet");
+            paymentLinkRequest.put("callback_url", "http://localhost:5173/wallet?order_id=" + orderId);
             paymentLinkRequest.put("callback_method", "get");
 
             // Create the payment link using the paymentLink.create() method

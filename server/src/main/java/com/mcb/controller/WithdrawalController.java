@@ -12,13 +12,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mcb.domain.WalletTransactionType;
 import com.mcb.modal.User;
 import com.mcb.modal.Wallet;
+import com.mcb.modal.WalletTransaction;
 import com.mcb.modal.Withdrawal;
+import com.mcb.service.TransactionService;
 import com.mcb.service.UserService;
 import com.mcb.service.WalletService;
 import com.mcb.service.WithdrawalService;
-
 
 @RestController
 public class WithdrawalController {
@@ -31,6 +33,9 @@ public class WithdrawalController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TransactionService transactionService;
+
     @PostMapping("/api/withdrawal/{amount}")
     public ResponseEntity<?> withdrawalRequest(
         @PathVariable Long amount,
@@ -41,6 +46,14 @@ public class WithdrawalController {
 
         Withdrawal withdrawal = withdrawalService.requestWithdrawal(amount, user);
         walletService.addBalance(userWallet, -withdrawal.getAmount());
+
+        WalletTransaction walletTransaction = transactionService.createTransaction(
+            userWallet,
+            WalletTransactionType.WITHDRAWAL,
+            withdrawal.getAmount(),
+            null, // Assuming transferId is not available here
+            "bank account withdrawal"
+        );
 
         return new ResponseEntity<>(withdrawal, HttpStatus.OK);
     }

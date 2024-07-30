@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mcb.domain.PaymentMethod;
@@ -20,7 +19,6 @@ import com.stripe.exception.StripeException;
 
 
 @RestController
-@RequestMapping("/api")
 public class PaymentController {
     @Autowired
     private UserService userService;
@@ -41,7 +39,7 @@ public class PaymentController {
         PaymentOrder order = paymentService.createOrder(user, amount, paymentMethod);
         
         if (paymentMethod.equals(PaymentMethod.RAZORPAY)) {
-            paymentResponse = paymentService.createRazorpayPaymentLink(user, amount);
+            paymentResponse = paymentService.createRazorpayPaymentLink(user, amount, order.getId());
         } else {
             paymentResponse = paymentService.createStripePaymentLink(user, amount, order.getId());
         }

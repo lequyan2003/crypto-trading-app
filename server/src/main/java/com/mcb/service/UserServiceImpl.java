@@ -3,7 +3,7 @@ package com.mcb.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Service;
 
 import com.mcb.config.JwtProvider;
 import com.mcb.domain.VerificationType;
@@ -11,7 +11,7 @@ import com.mcb.modal.TwoFactorAuth;
 import com.mcb.modal.User;
 import com.mcb.repository.UserRepository;
 
-@RestController
+@Service
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;

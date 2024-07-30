@@ -23,6 +23,7 @@ import com.mcb.response.AuthResponse;
 import com.mcb.service.CustomUserDetailsService;
 import com.mcb.service.EmailService;
 import com.mcb.service.TwoFactorOtpService;
+import com.mcb.service.WatchlistService;
 import com.mcb.utils.OtpUtils;
 
 import jakarta.mail.MessagingException;
@@ -38,6 +39,9 @@ public class AuthController {
 
     @Autowired
     private TwoFactorOtpService twoFactorOtpService;
+
+    @Autowired
+    private WatchlistService watchlistService;
 
     @Autowired
     private EmailService emailService;
@@ -56,6 +60,8 @@ public class AuthController {
         newUser.setFullName(user.getFullName());
 
         User savedUser = userRepository.save(newUser);
+
+        watchlistService.createWatchlist(savedUser);
 
         Authentication auth = new UsernamePasswordAuthenticationToken(
             user.getEmail(),

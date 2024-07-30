@@ -3,12 +3,14 @@ package com.mcb.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.mcb.modal.Coin;
 import com.mcb.modal.User;
 import com.mcb.modal.Watchlist;
 import com.mcb.repository.WatchlistRepository;
 
+@Service
 public class WatchlistServiceImpl implements WatchlistService {
     @Autowired
     private WatchlistRepository watchlistRepository;
