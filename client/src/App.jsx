@@ -12,12 +12,24 @@ import StockDetails from "./pages/Stock Details/StockDetails";
 import Wallet from "./pages/Wallet/Wallet";
 import Watchlist from "./pages/Watchlist/Watchlist";
 import Withdrawal from "./pages/Withdrawal/Withdrawal";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getUser } from "./State/Auth/Action";
 
 function App() {
+  const { auth } = useSelector(store => store);
+  const dispatch = useDispatch();
+
+  console.log(" auth ------ ", auth);
+
+  useEffect(() => {
+    dispatch(getUser(auth.jwt || localStorage.getItem("jwt")));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth.jwt]);
+
   return (
     <>
-      <Auth />
-      {false && (
+      {auth.user ? (
         <div>
           <Navbar />
           <Routes>
@@ -34,7 +46,7 @@ function App() {
             <Route path="*" element={<Notfound />} />
           </Routes>
         </div>
-      )}
+      ) : <Auth />}
     </>
   );
 }

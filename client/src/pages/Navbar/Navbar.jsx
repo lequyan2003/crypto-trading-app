@@ -12,8 +12,11 @@ import {
   MagnifyingGlassIcon,
 } from "@radix-ui/react-icons";
 import Sidebar from "./Sidebar";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
+  const { auth } = useSelector(store => store);
+
   return (
     <div
       className="
@@ -62,7 +65,9 @@ const Navbar = () => {
       </div>
       <div>
         <Avatar>
-          <AvatarFallback>T</AvatarFallback>
+          <AvatarFallback>
+            {auth.user?.fullName[0].toUpperCase()}
+          </AvatarFallback>
         </Avatar>
       </div>
     </div>
