@@ -1,4 +1,6 @@
+/* eslint-disable react/prop-types */
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Table,
   TableBody,
@@ -9,12 +11,14 @@ import {
 } from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
 
-const AssetTable = () => {
+// eslint-disable-next-line react/prop-types
+const AssetTable = ({ coin, category }) => {
   const navigate = useNavigate();
 
   return (
     <Table>
-      <TableHeader>
+      <ScrollArea className={`${category=="all"?"h-[77.3vh]":"h-[82vh]"}`}>
+         <TableHeader>
         <TableRow>
           <TableHead className="w-[100px]">Coin</TableHead>
           <TableHead>SYMBOL</TableHead>
@@ -25,25 +29,26 @@ const AssetTable = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((item, index) => (
-          <TableRow key={index}>
+        {coin.map((item) => (
+          <TableRow key={item.id}>
             <TableCell
-              onClick={() => navigate(`/market/bitcoin`)}
+              onClick={() => navigate(`/market/${item.id}`)}
               className="font-medium flex items-center gap-2"
             >
               <Avatar className="-z-50">
-                <AvatarImage src="https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png?1696501400" />
+                <AvatarImage src={item.image} />
               </Avatar>
-              <span>Bitcoin</span>
+              <span>{item.name}</span>
             </TableCell>
-            <TableCell>BTC</TableCell>
-            <TableCell>9124463121</TableCell>
-            <TableCell>1364881428323</TableCell>
-            <TableCell>-0.20009</TableCell>
-            <TableCell className="text-right">$69249</TableCell>
+            <TableCell>{item.symbol}</TableCell>
+            <TableCell>{item.total_volume}</TableCell>
+            <TableCell>{item.market_cap}</TableCell>
+            <TableCell>{item.price_change_percentage_24h}</TableCell>
+            <TableCell className="text-right">${item.current_price}</TableCell>
           </TableRow>
         ))}
       </TableBody>
+      </ScrollArea>
     </Table>
   );
 };
