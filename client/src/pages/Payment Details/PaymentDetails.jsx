@@ -15,25 +15,34 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import PaymentDetailsForm from "./PaymentDetailsForm";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getPaymentDetails } from "@/State/Withdrawal/Action";
 
 const PaymentDetails = () => {
+  const dispatch = useDispatch();
+  const { withdrawal } = useSelector(store => store);
+
+  useEffect(() => {
+    dispatch(getPaymentDetails({ jwt: localStorage.getItem("jwt") }));
+  }, [dispatch]);
   return (
     <div className="px-20">
       <h1 className="text-3xl font-bold py-10">Payment Details</h1>
-      {false ? (
+      {withdrawal.paymentDetails ? (
         <Card>
           <CardHeader>
-            <CardTitle>Yes Bank</CardTitle>
-            <CardDescription>A/C No : ********1563</CardDescription>
+            <CardTitle>{withdrawal.paymentDetails?.bankName}</CardTitle>
+            <CardDescription>A/C No: *****{withdrawal.paymentDetails?.accountNumber?.slice(-4)}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
               <p className="w-32">A/C Holder</p>
-              <p className="text-gray-400"> : Abel</p>
+              <p className="text-gray-400"> : {withdrawal.paymentDetails?.accountHolderName}</p>
             </div>
             <div className="flex items-center">
               <p className="w-32">IFSC</p>
-              <p className="text-gray-400"> : YESA00000007</p>
+              <p className="text-gray-400"> : {withdrawal.paymentDetails?.ifsc}</p>
             </div>
           </CardContent>
         </Card>
