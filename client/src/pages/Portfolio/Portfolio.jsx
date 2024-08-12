@@ -7,8 +7,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getUserAssets } from "@/State/Asset/Action";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const Portfolio = () => {
+  const dispatch = useDispatch();
+  const { asset } = useSelector(store => store);
+
+  useEffect(() => {
+    dispatch(getUserAssets(localStorage.getItem("jwt")));
+  }, [dispatch]);
   return (
     <div className="p-5 lg:p-20">
       <h1 className="font-bold text-3xl pb-5">Portfolio</h1>
@@ -24,19 +33,19 @@ const Portfolio = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((item, index) => (
+          {asset.userAssets.map((item, index) => (
             <TableRow key={index}>
               <TableCell className="font-medium flex items-center gap-2">
                 <Avatar className="-z-50">
-                  <AvatarImage src="https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png?1696501400" />
+                  <AvatarImage src={item.coin.image} />
                 </Avatar>
-                <span>Bitcoin</span>
+                <span>{item.coin.name}</span>
               </TableCell>
-              <TableCell>BTC</TableCell>
-              <TableCell>9124463121</TableCell>
-              <TableCell>1364881428323</TableCell>
-              <TableCell>-0.20009</TableCell>
-              <TableCell className="text-right">$69249</TableCell>
+              <TableCell>{item.coin.symbol.toUpperCase()}</TableCell>
+              <TableCell>{item.quantity}</TableCell>
+              <TableCell>{item.coin.price_change_24h}</TableCell>
+              <TableCell>{item.coin.price_change_percentage_24h}</TableCell>
+              <TableCell className="text-right">{item.coin.total_volume}</TableCell>
             </TableRow>
           ))}
         </TableBody>
