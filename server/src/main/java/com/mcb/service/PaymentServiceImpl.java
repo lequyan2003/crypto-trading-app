@@ -30,7 +30,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Value("${razorpay.api.key}")
     private String apiKey;
-    
+
     @Value("${razorpay.api.secret}")
     private String apiSecretKey;
 
@@ -48,8 +48,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentOrder getPaymentOrderById(Long id) throws Exception {
         return paymentOrderRepository.findById(id).orElseThrow(
-            () -> new Exception("payment order not found")
-        );
+                () -> new Exception("payment order not found"));
     }
 
     @Override
@@ -57,19 +56,18 @@ public class PaymentServiceImpl implements PaymentService {
         if (paymentOrder.getStatus() == null) {
             paymentOrder.setStatus(PaymentOrderStatus.PENDING);
         }
-        
+
         if (paymentOrder.getStatus().equals(PaymentOrderStatus.PENDING)) {
             if (paymentOrder.getPaymentMethod().equals(PaymentMethod.RAZORPAY)) {
                 RazorpayClient razorpayClient = new RazorpayClient(
-                    apiKey,
-                    apiSecretKey
-                );
+                        apiKey,
+                        apiSecretKey);
                 Payment payment = razorpayClient.payments.fetch(paymentId);
 
                 Integer amount = payment.get("amount");
                 String status = payment.get("status");
 
-                if (status.equals("captured"))  {
+                if (status.equals("captured")) {
                     paymentOrder.setStatus(PaymentOrderStatus.SUCCESS);
                     return true;
                 }
@@ -137,28 +135,25 @@ public class PaymentServiceImpl implements PaymentService {
         Stripe.apiKey = stripeSecretKey;
 
         SessionCreateParams params = SessionCreateParams.builder()
-            .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-            .setMode(SessionCreateParams.Mode.PAYMENT)
-            .setSuccessUrl("http://localhost:5173/wallet?order_id=" + orderId)
-            .setCancelUrl("http://localhost:5173/payment/cancel")
-            .addLineItem(
-                SessionCreateParams.LineItem.builder()
-                    .setQuantity(1L)
-                    .setPriceData(
-                        SessionCreateParams.LineItem.PriceData.builder()
-                            .setCurrency("usd")
-                            .setUnitAmount(amount * 100)
-                            .setProductData(
-                                SessionCreateParams
-                                    .LineItem
-                                    .PriceData
-                                    .ProductData
-                                    .builder()
-                                    .setName("Top up wallet")
-                                    .build()
-                            ).build()
-                    ).build()
-            ).build();
+                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+                .setMode(SessionCreateParams.Mode.PAYMENT)
+                .setSuccessUrl("http://localhost:5173/wallet?order_id=" + orderId)
+                .setCancelUrl("http://localhost:5173/payment/cancel")
+                .addLineItem(
+                        SessionCreateParams.LineItem.builder()
+                                .setQuantity(1L)
+                                .setPriceData(
+                                        SessionCreateParams.LineItem.PriceData.builder()
+                                                .setCurrency("usd")
+                                                .setUnitAmount(amount * 100)
+                                                .setProductData(
+                                                        SessionCreateParams.LineItem.PriceData.ProductData
+                                                                .builder()
+                                                                .setName("Top up wallet")
+                                                                .build())
+                                                .build())
+                                .build())
+                .build();
 
         Session session = Session.create(params);
 

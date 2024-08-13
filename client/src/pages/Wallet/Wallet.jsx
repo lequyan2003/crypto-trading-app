@@ -49,7 +49,7 @@ const Wallet = () => {
       dispatch(depositMoney({
         jwt: localStorage.getItem("jwt"),
         orderId,
-        paymentId: razorpayPaymentId || paymentId,
+        // paymentId: razorpayPaymentId || paymentId,
         navigate
       }))
     }

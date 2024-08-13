@@ -23,7 +23,6 @@ import com.mcb.service.PaymentService;
 import com.mcb.service.UserService;
 import com.mcb.service.WalletService;
 
-
 @RestController
 public class WalletController {
     @Autowired
@@ -40,8 +39,7 @@ public class WalletController {
 
     @GetMapping("/api/wallet")
     public ResponseEntity<Wallet> getUserWallet(
-        @RequestHeader("Authorization") String jwt
-    ) {
+            @RequestHeader("Authorization") String jwt) {
         User user = userService.findUserProfileByJwt(jwt);
 
         Wallet wallet = walletService.getUserWallet(user);
@@ -51,28 +49,25 @@ public class WalletController {
 
     @PutMapping("/api/wallet/{walletId}/transfer")
     public ResponseEntity<Wallet> walletToWalletTransfer(
-        @RequestHeader("Authorization") String jwt,
-        @PathVariable Long walletId,
-        @RequestBody WalletTransaction req
-    ) throws Exception {
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable Long walletId,
+            @RequestBody WalletTransaction req) throws Exception {
         User senderUser = userService.findUserProfileByJwt(jwt);
         Wallet receiverWallet = walletService.findWalletById(walletId);
         Wallet wallet = walletService.walletToWalletTransfer(
-            senderUser,
-            receiverWallet,
-            req.getAmount()
-        );
+                senderUser,
+                receiverWallet,
+                req.getAmount());
 
         return new ResponseEntity<>(wallet, HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/api/wallet/order/{orderId}/pay")
     public ResponseEntity<Wallet> payOrderPayment(
-        @RequestHeader("Authorization") String jwt,
-        @PathVariable Long orderId
-    ) throws Exception {
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable Long orderId) throws Exception {
         User user = userService.findUserProfileByJwt(jwt);
-        
+
         Order order = orderService.getOrderById(orderId);
 
         Wallet wallet = walletService.payOrderPayment(order, user);
@@ -80,25 +75,29 @@ public class WalletController {
         return new ResponseEntity<>(wallet, HttpStatus.ACCEPTED);
     }
 
+    // orderId for RAZORPAY
     @PutMapping("/api/wallet/deposit")
     public ResponseEntity<Wallet> addBalanceToWallet(
-        @RequestHeader("Authorization") String jwt,
-        @RequestParam(name = "order_id") Long orderId,
-        @RequestParam(name = "payment_id") String paymentId
-    ) throws Exception {
+            @RequestHeader("Authorization") String jwt,
+            // @RequestParam(name = "payment_id") String paymentId,
+            @RequestParam(name = "order_id") Long orderId) throws Exception {
+        // System.out.println("Received deposit request with order_id: " + orderId + "
+        // and payment_id: " + paymentId);
+
         User user = userService.findUserProfileByJwt(jwt);
-        
+
         Wallet wallet = walletService.getUserWallet(user);
 
         PaymentOrder order = paymentService.getPaymentOrderById(orderId);
 
-        Boolean status = paymentService.proceedPaymentOrder(order, paymentId);
+        // Boolean status = paymentService.proceedPaymentOrder(order, paymentId);
 
         if (wallet.getBalance() == null) {
             wallet.setBalance(BigDecimal.valueOf(0));
         }
-        
-        if (status) {
+
+        // if (status) {
+        if (orderId != null) {
             wallet = walletService.addBalance(wallet, order.getAmount());
         }
 
