@@ -74,6 +74,10 @@ public class PaymentServiceImpl implements PaymentService {
                 paymentOrder.setStatus(PaymentOrderStatus.FAILED);
                 paymentOrderRepository.save(paymentOrder);
                 return false;
+            } else if (paymentOrder.getPaymentMethod().equals(PaymentMethod.STRIPE)) {
+                if (paymentId == "NA") {
+                    return true;
+                }
             }
             paymentOrder.setStatus(PaymentOrderStatus.SUCCESS);
             paymentOrderRepository.save(paymentOrder);

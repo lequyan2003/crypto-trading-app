@@ -79,10 +79,8 @@ public class WalletController {
     @PutMapping("/api/wallet/deposit")
     public ResponseEntity<Wallet> addBalanceToWallet(
             @RequestHeader("Authorization") String jwt,
-            // @RequestParam(name = "payment_id") String paymentId,
+            @RequestParam(name = "payment_id") String paymentId,
             @RequestParam(name = "order_id") Long orderId) throws Exception {
-        // System.out.println("Received deposit request with order_id: " + orderId + "
-        // and payment_id: " + paymentId);
 
         User user = userService.findUserProfileByJwt(jwt);
 
@@ -90,14 +88,13 @@ public class WalletController {
 
         PaymentOrder order = paymentService.getPaymentOrderById(orderId);
 
-        // Boolean status = paymentService.proceedPaymentOrder(order, paymentId);
+        Boolean status = paymentService.proceedPaymentOrder(order, paymentId);
 
         if (wallet.getBalance() == null) {
             wallet.setBalance(BigDecimal.valueOf(0));
         }
 
-        // if (status) {
-        if (orderId != null) {
+        if (status) {
             wallet = walletService.addBalance(wallet, order.getAmount());
         }
 

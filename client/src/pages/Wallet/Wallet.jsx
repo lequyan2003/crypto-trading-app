@@ -45,14 +45,22 @@ const Wallet = () => {
   }, []);
 
   useEffect(() => {
-    if (orderId) {
+    if (paymentId == null) {  // STRIPE
       dispatch(depositMoney({
         jwt: localStorage.getItem("jwt"),
         orderId,
-        // paymentId: razorpayPaymentId || paymentId,
+        paymentId: "NA",
         navigate
       }))
+    } else {  // RAZORPAY
+      dispatch(depositMoney({
+      jwt: localStorage.getItem("jwt"),
+      orderId,
+      paymentId: razorpayPaymentId || paymentId,
+      navigate
+    }));
     }
+    
   }, [dispatch, navigate, orderId, paymentId, razorpayPaymentId]);
 
   const handleFetchUserWallet = () => {

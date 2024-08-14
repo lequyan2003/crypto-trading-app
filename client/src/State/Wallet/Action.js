@@ -61,7 +61,7 @@ export const depositMoney = ({ jwt, orderId, paymentId, navigate }) => async(dis
         const response = await api.put(`/api/wallet/deposit`, null, {
             params: {
                 order_id: orderId,
-                // payment_id: paymentId,
+                payment_id: paymentId,
             },
             headers: {
                 Authorization: `Bearer ${jwt}`,
@@ -103,7 +103,7 @@ export const paymentHandler = ({ jwt, amount, paymentMethod }) => async(dispatch
         console.log("response", response.data);
 
         if (response.data.payment_url) {
-                    window.location.href = response.data.payment_url;
+            window.location.href = response.data.payment_url;
         }
 
         // dispatch({
