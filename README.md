@@ -44,25 +44,31 @@ cd crypto-trading-app/server
 mvn clean install
 ```
 
-4. **Run the Spring Boot backend**
+4. **Compile the Spring Boot backend**
+
+```bash
+mvn clean compile
+```
+
+5. **Run the Spring Boot backend**
 
 ```bash
 mvn spring-boot:run
 ```
 
-5. **Navigate to the frontend directory:**
+6. **Navigate to the frontend directory:**
 
 ```bash
 cd ../client
 ```
 
-6. **Install client dependencies**
+7. **Install client dependencies**
 
 ```bash
 npm install
 ```
 
-7. **Run the React frontend**
+8. **Run the React frontend**
 
 ```bash
 npm run dev
